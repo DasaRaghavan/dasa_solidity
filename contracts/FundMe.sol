@@ -22,6 +22,16 @@ contract FundMe {
         owner = payable(msg.sender);
     }
 
+    modifier onlyOwner {
+        require (owner == msg.sender, "Not the owner - cannot withdraw funds!");
+        _; 
+        // this modifier is used in all the three withdraw functions of this smart contract
+        // limits the withdrawal to take place if the caller is the owner of the contract
+        // this underscore represents the function body that will be executed when the function uses this modifier
+        // placement of this underscore within the modifier determines when the function body will be executed
+        // here, we want the function body to be executed only if the require clause that precedes this underscore is successful
+    }
+
     function fund() public payable {
 
         fundsReceived = msg.value.getUSDValue(); // funds received is USD equivalent wei sent via msg.value
@@ -36,19 +46,19 @@ contract FundMe {
 
     }
 
-    function withdrawWithTransfer() public payable {
+    function withdrawWithTransfer() public onlyOwner { // modifier's (onlyOwner) require clause will be executed before the function body is executed
         owner.transfer(address(this).balance);  // will withdraw all accumulated balance in the contract to the owner
                                                 // has a gas limit of 2300
     }
 
-    function withdrawWithSend() public payable {
+    function withdrawWithSend() public onlyOwner {
         bool success = owner.send(address(this).balance);   // will withdraw all accumulated balance in the contract to the owner
                                                             // has a gas limit of 2300
                                                             // handle the bool return code to validate success
         require(success, "Send failed!");
     }
 
-    function withdrawWithCall() public payable {
+    function withdrawWithCall() public onlyOwner {
         (bool success, ) = owner.call{value: address(this).balance}("");    // call is flexible and powerful
                                                                             // will withdraw all accumulated balance in the contract to the owner
                                                                             // has no gas limit
