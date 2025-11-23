@@ -10,8 +10,7 @@ contract FundMe {
     // Enable contract owner to withdraw deposited funds from the contract
     // Set minimum funding requirements (1 ether)
     // Two primary functions: fund, withdraw
-    // this version includes three types of withdraw functions
-    // -- Transfer, Send, Call
+    // this version includes three types of withdraw functions -- Transfer, Send, Call
     
     uint constant MINIMUM_USD = 5;
     address[] funders;
